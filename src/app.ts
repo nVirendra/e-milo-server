@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth.routes';
 
 dotenv.config();
 
@@ -16,8 +17,6 @@ app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('API is running...');
 });
 
-// TODO: Add routes like:
-// app.use('/api/auth', authRoutes);
-// app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
 export default app;
