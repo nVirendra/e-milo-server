@@ -6,10 +6,11 @@ import {
   commentOnPost,
 } from '../controllers/post.controller';
 import { authenticate } from '../middlewares/auth.middleware';
+import { upload } from '../utils/upload';
 
 const router = express.Router();
 
-router.post('/', authenticate, createPost);
+router.post('/', authenticate, upload.single('file'), createPost);
 router.get('/feed', authenticate, getFeedPosts);
 router.put('/like/:id', authenticate, likePost);
 router.post('/comment/:id', authenticate, commentOnPost);

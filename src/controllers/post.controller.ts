@@ -2,21 +2,39 @@ import { Response } from 'express';
 import Post from '../models/Post';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { asyncHandler } from '../utils/asyncHandler';
+import cloudinary from '../config/cloudinary';
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
-    const { content, mediaUrl, mediaType, privacy } = req.body;
+    console.log('step 1', req.body);
+    const { content, is_private } = req.body;
+    console.log('step 2');
+    let mediaUrl = '';
+    let mediaType = '';
 
+    console.log('step 3');
+    if (req.file) {
+      console.log('step 4');
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'e-milo/posts',
+        resource_type: 'auto',
+      });
+      console.log('step 5');
+      mediaUrl = result.secure_url;
+      mediaType = result.resource_type; // "image" or "video"
+    }
+
+    console.log('step 6');
     const newPost = new Post({
       userId: req.user._id,
       content,
       mediaUrl,
       mediaType,
-      privacy,
+      privacy: is_private === 'true' ? 'private' : 'public',
     });
 
-    const saved = await newPost.save();
-    res.status(201).json(saved);
+    const savedPost = await newPost.save();
+    return res.status(201).json(savedPost);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err });
   }
