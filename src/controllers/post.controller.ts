@@ -6,20 +6,18 @@ import cloudinary from '../config/cloudinary';
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
-    console.log('step 1', req.body);
     const { content, is_private } = req.body;
-    console.log('step 2');
+
     let mediaUrl = '';
     let mediaType = '';
 
-    console.log('step 3');
     if (req.file) {
       console.log('step 4');
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: 'e-milo/posts',
         resource_type: 'auto',
       });
-      console.log('step 5');
+
       mediaUrl = result.secure_url;
       mediaType = result.resource_type; // "image" or "video"
     }
