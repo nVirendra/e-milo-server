@@ -12,7 +12,6 @@ export const createPost = async (req: AuthRequest, res: Response) => {
     let mediaType = '';
 
     if (req.file) {
-      console.log('step 4');
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: 'e-milo/posts',
         resource_type: 'auto',
@@ -22,7 +21,6 @@ export const createPost = async (req: AuthRequest, res: Response) => {
       mediaType = result.resource_type; // "image" or "video"
     }
 
-    console.log('step 6');
     const newPost = new Post({
       userId: req.user._id,
       content,
