@@ -17,8 +17,6 @@ app.get('/', (_req: Request, res: Response) => {
   res.status(200).send('API is running...');
 });
 
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
-
 app.use('/api/auth', authRoutes);
 
 export default app;
