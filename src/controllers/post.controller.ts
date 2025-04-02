@@ -88,3 +88,18 @@ export const commentOnPost = asyncHandler(
     res.json(post);
   }
 );
+
+export const getUserPosts = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const posts = await Post.find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .populate('userId', '_id name');
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error fetching user posts:', error);
+    res.status(500).json({ message: 'Failed to fetch posts' });
+  }
+};
