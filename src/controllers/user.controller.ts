@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User';
+import { decodeToken } from '../utils/jwt';
 
 export const searchUsers = async (req: Request, res: Response) => {
   const keyword = req.query.search
@@ -36,14 +37,28 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
 export const followUser = async (req: Request, res: Response) => {
   try {
+    console.log('userToFollow: ', req.params.id);
     const userToFollow = await User.findById(req.params.id);
-    const currentUser = await User.findById(req.user._id);
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer '))
+      return res.status(401).json({ message: 'Unauthorized' });
+
+    const token = authHeader.split(' ')[1];
+    const decoded = decodeToken(token);
+
+    if (!decoded) return res.status(401).json({ message: 'Invalid token' });
+
+    const currentUserId = decoded.userId;
+    console.log(decoded, currentUserId);
+
+    const currentUser = await User.findById(currentUserId);
 
     if (!userToFollow || !currentUser)
       return res.status(404).send('User not found');
 
-    if (!userToFollow.followers.includes(req.user._id)) {
-      userToFollow.followers.push(req.user._id);
+    if (!userToFollow.followers.includes(currentUserId)) {
+      userToFollow.followers.push(currentUserId);
       currentUser.following.push(req.params.id);
       await userToFollow.save();
       await currentUser.save();
