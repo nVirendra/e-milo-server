@@ -15,6 +15,7 @@ router.post('/', async (req, res) => {
   });
 
   sendNotificationToUser(io, receiverId, notification);
+  console.log(' after notification');
   res.status(201).json(notification);
 });
 
