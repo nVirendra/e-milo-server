@@ -34,6 +34,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   res.json({
     token,
-    user: { id: user._id, name: user.name, email: user.email },
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      followers: user.followers.map((f) => f._id),
+      following: user.following.map((f) => f._id),
+    },
   });
 };

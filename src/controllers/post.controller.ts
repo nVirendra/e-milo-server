@@ -3,6 +3,7 @@ import Post from '../models/Post';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { asyncHandler } from '../utils/asyncHandler';
 import cloudinary from '../config/cloudinary';
+import Notification from '../models/Notification';
 
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
@@ -61,6 +62,15 @@ export const likePost = asyncHandler(
 
     const userId = req.user._id.toString();
     const liked = post.likes.includes(userId);
+
+    // if (post.userId.toString() !== userId) {
+    //   await Notification.create({
+    //     senderId: userId,
+    //     receiverId: post.userId,
+    //     type: 'like',
+    //     postId: post._id,
+    //   });
+    // }
 
     if (liked) {
       await post.updateOne({ $pull: { likes: userId } });

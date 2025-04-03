@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
 import postRoutes from './routes/post.routes';
 import userRoutes from './routes/user.routes';
+import notificationRoutes from './routes/notification.routes';
 
 dotenv.config();
 
@@ -22,5 +23,6 @@ app.get('/', (_req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 export default app;
